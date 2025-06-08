@@ -1,0 +1,13 @@
+a { color:#5D5D9E; } 
+a:visited { color:#5D5D9E; } 
+a:active { color:#5C615E; } 
+a:hover { color:#B2B3B4; } 
+body { background-color:#FFFFFF; padding:0;  margin: 0; }
+.textstyle1 { text-align:center; }
+.textstyle2 { font-size:12pt; font-family:'MS Sans Serif', Geneva, sans-serif; color:#000000;  }
+#text_e4bf9ac { vertical-align: bottom; position:relative; display: inline-block; width:233px; height:28px; background:none;  }
+.textstyle3 { text-align:left; }
+.textstyle4 { font-size:22pt; font-family:'MS Serif', 'New York', serif; color:#000000;  }
+#img_46617e6a { vertical-align: bottom; position:relative; display: inline-block; width:12%; background:none; height:auto;  }
+#img_4bfff64d { vertical-align: bottom; position:relative; display: inline-block; width:50%; background:none; height:auto;  }
+#text_49ec4bae { vertical-align: bottom; position:relative; display: inline-block; width:233px; height:117px; background:none;  }
