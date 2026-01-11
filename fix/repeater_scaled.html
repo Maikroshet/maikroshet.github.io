@@ -1,0 +1,191 @@
+<html>
+	<head>
+		<title>OnlineATV</title>
+		<style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden; /* hides scrollbars */
+                background: black;
+                color: white;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            #grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            .channel {
+                position: relative;
+                border: 1px solid white;
+                overflow: hidden; /* prevents video bleed */
+            }
+
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                background: black;
+            }
+
+
+            .nosignal {
+                position: absolute;
+                inset: 0;
+                background: black;
+                color: white;
+                font-family: monospace;
+                pointer-events: none;
+				font-size: 24px;
+            }
+
+            .channel-label {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                font-size: 18px;
+                opacity: 0.85;
+            }
+
+            .center-nosignal {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 48px;
+                color: tomato;
+                text-align: center;
+            }
+
+            #overlay {
+                position: fixed; /* take it out of layout */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 9999; /* above videos */
+                font-family: sans-serif;
+                background-color: white;
+                color: black;
+                width: 220px;
+                padding: 12px 16px;
+                text-align: center;
+                border: 3px solid tomato;
+                border-radius: 6px;
+                user-select: none;
+            }
+
+                #overlay:hover {
+                    color: blue;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+		</style>
+		
+	</head>
+    <body>
+        <div id="overlay">Click to enable sound</div>
+
+        <div id="grid">
+            <div class="channel">
+                <video autoplay muted playsinline id="v1"
+                       src="https://oatv.maikroshet.com/ch1/index.m3u8"></video>
+                <div class="nosignal" id="ns1">
+                    <div class="channel-label">Channel 1</div>
+                    <p class="center-nosignal">NO SIGNAL</p>
+                </div>
+            </div>
+
+            <div class="channel">
+                <video autoplay muted playsinline id="v2"
+                       src="https://oatv.maikroshet.com/ch2/index.m3u8"></video>
+                <div class="nosignal" id="ns2">
+                    <div class="channel-label">Channel 2</div>
+                    <p class="center-nosignal">NO SIGNAL</p>
+                </div>
+            </div>
+
+            <div class="channel">
+                <video autoplay muted playsinline id="v3"
+                       src="https://oatv.maikroshet.com/ch3/index.m3u8"></video>
+                <div class="nosignal" id="ns3">
+                    <div class="channel-label">Channel 3</div>
+                    <p class="center-nosignal">NO SIGNAL</p>
+                </div>
+            </div>
+
+            <div class="channel">
+                <video autoplay muted playsinline id="v4"
+                       src="https://oatv.maikroshet.com/ch4/index.m3u8"></video>
+                <div class="nosignal" id="ns4">
+                    <div class="channel-label">Channel 4</div>
+                    <p class="center-nosignal">NO SIGNAL</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            function setup(video, overlay) {
+                function show() { overlay.style.display = "flex"; }
+                function hide() { overlay.style.display = "none"; }
+
+                video.addEventListener("loadeddata", hide);
+                video.addEventListener("playing", hide);
+
+                video.addEventListener("error", show);
+                video.addEventListener("stalled", show);
+                video.addEventListener("waiting", show);
+                video.addEventListener("emptied", show);
+            }
+
+            overlay.onclick = () => {
+                document.querySelectorAll("video").forEach(v => {
+                    v.muted = false;
+                    v.play();
+                });
+                overlay.remove();
+            };
+
+            document.querySelectorAll(".channel").forEach((ch, i) => {
+                ch.style.cursor = "pointer";
+                ch.addEventListener("click", () => {
+                    window.location.href = `https://oatv.maikroshet.com/ch${i + 1}/index.m3u8`;
+                });
+            });
+
+            function retryVideo(video) {
+                if (
+                    video.readyState === 0 || // HAVE_NOTHING
+                    video.error ||
+                    video.paused
+                ) {
+                    const src = video.src;
+                    video.src = "";        // force reload
+                    video.src = src;
+                    video.load();
+                    video.play().catch(() => { });
+                }
+            }
+
+            setInterval(() => {
+                document.querySelectorAll("video").forEach(retryVideo);
+            }, 7000); // every 7 seconds
+
+            setup(v1, document.querySelector("#ns1"));
+            setup(v2, document.querySelector("#ns2"));
+            setup(v3, document.querySelector("#ns3"));
+            setup(v4, document.querySelector("#ns4"));
+
+        </script>
+    </body>
+</html>
